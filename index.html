@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcul Intégral — Terminale Spécialité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #faf7f2;
+    --cream: #f0ead8;
+    --accent: #c8402a;
+    --accent2: #2a6c8e;
+    --gold: #c9933a;
+    --muted: #8a7d6e;
+    --border: #d4c9b5;
+    --code-bg: #1e1a16;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Syne', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--serif);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.35rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .header-left { opacity: 0.7; }
+  .header-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .header-badge {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4.5rem 2rem 3.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '∫';
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14rem;
+    opacity: 0.06;
+    font-family: var(--serif);
+    line-height: 1;
+    color: var(--gold);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 {
+    font-family: var(--sans);
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-family: var(--serif);
+    color: var(--gold);
+    font-weight: 400;
+    font-size: 1.1em;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    opacity: 0.65;
+    font-family: var(--mono);
+    margin-bottom: 2rem;
+    letter-spacing: 0.03em;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.2rem 0.8rem;
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .hero-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-family: var(--mono);
+    margin-top: 1.5rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .hero-link:hover { border-bottom-color: var(--gold); }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  nav ul {
+    list-style: none;
+    display: inline-flex;
+    padding: 0 1rem;
+  }
+
+  nav ul li a {
+    display: inline-block;
+    padding: 0.85rem 1.1rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  nav ul li a:hover,
+  nav ul li a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 4rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .section h2 {
+    font-family: var(--sans);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+
+  .section h2 .math-inline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.9em;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .section h3 {
+    font-family: var(--sans);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin: 2rem 0 0.8rem;
+    color: var(--accent2);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  /* ── PROGRAMME BOX ── */
+  .prog-box {
+    background: var(--cream);
+    border-left: 3px solid var(--accent);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .prog-box p { margin-bottom: 0.4rem; }
+  .prog-box p:last-child { margin-bottom: 0; }
+
+  .capacites {
+    background: linear-gradient(135deg, #f0f7f0 0%, #e8f4e8 100%);
+    border-left: 3px solid #4a8c4a;
+    padding: 1.2rem 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .capacites p {
+    margin-bottom: 0.4rem;
+    font-size: 0.93rem;
+  }
+
+  .capacites p::before {
+    content: '✦ ';
+    color: #4a8c4a;
+    font-size: 0.8em;
+  }
+
+  /* ── DEFINITION BOX ── */
+  .def-box {
+    border: 1px solid var(--border);
+    background: #fff;
+    padding: 1.4rem 1.8rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .def-box::before {
+    content: 'Définition';
+    position: absolute;
+    top: -0.6rem;
+    left: 1rem;
+    background: var(--accent);
+    color: white;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .thm-box {
+    border: 1px solid var(--accent2);
+    background: #f5f9fc;
+    padding: 1.4rem 1.8rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .thm-box::before {
+    content: 'Théorème';
+    position: absolute;
+    top: -0.6rem;
+    left: 1rem;
+    background: var(--accent2);
+    color: white;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .prop-box {
+    border: 1px solid var(--gold);
+    background: #fdf9f0;
+    padding: 1.4rem 1.8rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .prop-box::before {
+    content: 'Propriété';
+    position: absolute;
+    top: -0.6rem;
+    left: 1rem;
+    background: var(--gold);
+    color: white;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.5rem;
+  }
+
+  /* ── PROOF ── */
+  details.proof {
+    margin: 1rem 0;
+    border: 1px dashed var(--border);
+  }
+
+  details.proof summary {
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    background: var(--cream);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    transition: color 0.2s;
+  }
+
+  details.proof summary:hover { color: var(--ink); }
+  details.proof summary::before { content: '▶'; font-size: 0.6em; transition: transform 0.2s; }
+  details.proof[open] summary::before { transform: rotate(90deg); }
+
+  details.proof .proof-body {
+    padding: 1rem 1.5rem;
+    font-size: 0.93rem;
+    background: #fff;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.6rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tr:nth-child(even) td { background: var(--cream); }
+  tr:hover td { background: #e8f0e8; }
+
+  /* ── CALCULATOR ── */
+  .calc-box {
+    background: var(--code-bg);
+    color: #e8dcc8;
+    padding: 1.8rem;
+    margin: 1.5rem 0;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .calc-box::before {
+    content: 'Calculateur interactif';
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.6rem;
+  }
+
+  .calc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .calc-label {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--gold);
+    min-width: 80px;
+  }
+
+  .calc-box select,
+  .calc-box input[type="number"],
+  .calc-box input[type="text"] {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #e8dcc8;
+    padding: 0.4rem 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .calc-box select:focus,
+  .calc-box input:focus {
+    border-color: var(--gold);
+  }
+
+  .calc-box select option { background: var(--code-bg); }
+
+  .calc-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+
+  .calc-btn:hover { background: #a83520; }
+
+  .calc-result {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border-left: 2px solid var(--gold);
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    min-height: 2.5rem;
+    color: #e8dcc8;
+  }
+
+  .result-val {
+    color: var(--gold);
+    font-size: 1.1rem;
+  }
+
+  /* ── CHART ── */
+  .chart-wrap {
+    background: #fff;
+    border: 1px solid var(--border);
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .chart-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 0.85rem;
+    font-family: var(--mono);
+  }
+
+  .chart-controls label { color: var(--muted); }
+
+  .chart-controls input[type="range"] {
+    accent-color: var(--accent);
+    width: 80px;
+  }
+
+  .chart-controls input[type="number"] {
+    width: 60px;
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  /* ── QCM ── */
+  .qcm-question {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 1.4rem 1.8rem;
+    margin-bottom: 1.5rem;
+    counter-increment: qcm;
+  }
+
+  .qcm-question::before {
+    content: 'Q' counter(qcm);
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+  }
+
+  .qcm-question p { margin-bottom: 0.8rem; font-size: 0.97rem; }
+
+  .qcm-options { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .qcm-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    padding: 0.4rem 0.6rem;
+    transition: background 0.15s;
+    font-size: 0.93rem;
+  }
+
+  .qcm-option:hover { background: rgba(0,0,0,0.04); }
+
+  .qcm-option input { accent-color: var(--accent); }
+
+  .qcm-feedback {
+    margin-top: 0.8rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.87rem;
+    font-family: var(--mono);
+    display: none;
+  }
+
+  .qcm-feedback.correct { background: #e8f4e8; color: #2a6a2a; border-left: 3px solid #4a8c4a; }
+  .qcm-feedback.incorrect { background: #fce8e8; color: #8a2a2a; border-left: 3px solid #c8402a; }
+
+  #qcm-section { counter-reset: qcm; }
+
+  .qcm-check-btn {
+    background: var(--accent2);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.3rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 0.6rem;
+    transition: background 0.2s;
+  }
+
+  .qcm-check-btn:hover { background: #1a4e6a; }
+
+  .qcm-score-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 1.8rem;
+    margin-top: 1.5rem;
+    font-family: var(--mono);
+    display: none;
+  }
+
+  .qcm-score-val {
+    font-size: 2.5rem;
+    font-family: var(--sans);
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  /* ── EXAMPLES ── */
+  .example-box {
+    border-left: 3px solid var(--accent2);
+    padding: 0.8rem 1.2rem;
+    margin: 1rem 0;
+    background: #f5f9fc;
+    font-size: 0.93rem;
+  }
+
+  .example-box strong {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent2);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── MISC ── */
+  .math-display {
+    overflow-x: auto;
+    padding: 0.5rem 0;
+  }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+    .hero::before { display: none; }
+  }
+
+  /* ── SCROLL ANIMATION ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── CONTACT ── */
+  .contact-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem 2rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .contact-box a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .contact-box a:hover { text-decoration: underline; }
+
+  /* ── INTEGRAL DEMO CANVAS ── */
+  #integral-demo-canvas {
+    width: 100%;
+    max-width: 700px;
+    border: 1px solid var(--border);
+    display: block;
+  }
+
+  .riemann-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .riemann-controls label strong { color: var(--ink); }
+
+  .riemann-controls input[type="range"] {
+    accent-color: var(--accent);
+    width: 100px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-left">Terminale · Spécialité Mathématiques · Analyse</span>
+  <div class="header-right">
+    <span class="header-badge">Page 15</span>
+    <span style="opacity:0.5">Programme officiel Éduscol</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Terminale · Spécialité Mathématiques · Analyse</div>
+  <h1>Calcul <em>Intégral</em></h1>
+  <p class="hero-sub">Intégrale · Sommes de Riemann · Théorème fondamental · Applications · Valeur moyenne</p>
+  <div class="hero-tags">
+    <span class="tag">Intégrale de Riemann</span>
+    <span class="tag">Théorème fondamental</span>
+    <span class="tag">Intégration par parties</span>
+    <span class="tag">Changement de variable</span>
+    <span class="tag">Applications géométriques</span>
+  </div>
+  <a href="https://eduscol.education.gouv.fr/sites/default/files/document/spe246annexe1158907pdf-84159.pdf" target="_blank" class="hero-link">
+    📄 Programme officiel Éduscol — Spécialité Terminale (p. 15) ↗
+  </a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <ul>
+    <li><a href="#programme">01 Programme</a></li>
+    <li><a href="#definition">02 Définition</a></li>
+    <li><a href="#proprietes">03 Propriétés</a></li>
+    <li><a href="#tfa">04 Th. Fondamental</a></li>
+    <li><a href="#methodes">05 Méthodes</a></li>
+    <li><a href="#table">06 Table</a></li>
+    <li><a href="#calculateur">07 Calculateur</a></li>
+    <li><a href="#applications">08 Applications</a></li>
+    <li><a href="#riemann">09 Riemann</a></li>
+    <li><a href="#qcm">10 QCM</a></li>
+    <li><a href="#contact">11 Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ══ 01 PROGRAMME ══ -->
+<section class="section fade-in" id="programme">
+  <span class="section-num">01</span>
+  <h2>Programme &amp; capacités attendues</h2>
+
+  <div class="prog-box">
+    <p>• Intégrale d'une fonction continue et positive sur \([a, b]\) : définition comme aire sous la courbe.</p>
+    <p>• Extension aux fonctions continues quelconques. Intégrale \(\displaystyle\int_a^b f(x)\,dx\).</p>
+    <p>• Propriétés de l'intégrale : linéarité, relation de Chasles, positivité, croissance.</p>
+    <p>• Lien entre primitives et intégrales : théorème fondamental de l'analyse.</p>
+    <p>• Valeur moyenne d'une fonction sur \([a,b]\).</p>
+    <p>• Intégration par parties. Changement de variable (dans les cas simples).</p>
+    <p>• Application au calcul d'aires et à l'étude de problèmes issus de la physique ou de l'économie.</p>
+  </div>
+
+  <div class="capacites">
+    <p>Calculer une intégrale à l'aide d'une primitive.</p>
+    <p>Établir une majoration d'une intégrale, encadrer une intégrale.</p>
+    <p>Utiliser la relation de Chasles pour découper ou recombiner une intégrale.</p>
+    <p>Calculer une intégrale par parties.</p>
+    <p>Effectuer un changement de variable (cas simples).</p>
+    <p>Calculer une aire entre deux courbes.</p>
+    <p>Calculer la valeur moyenne d'une fonction sur un intervalle.</p>
+    <p>Modéliser et résoudre un problème de physique ou d'économie impliquant une intégrale.</p>
+  </div>
+</section>
+
+<!-- ══ 02 DÉFINITION ══ -->
+<section class="section fade-in" id="definition">
+  <span class="section-num">02</span>
+  <h2>Définition de l'intégrale</h2>
+
+  <h3>Cas d'une fonction positive</h3>
+
+  <div class="def-box">
+    <p>Soit \(f\) une fonction <strong>continue et positive</strong> sur \([a, b]\). L'<strong>intégrale de \(f\) sur \([a, b]\)</strong>, notée
+    \[\int_a^b f(x)\,dx\]
+    est l'<strong>aire</strong> (en unités d'aire) du domaine compris entre la courbe de \(f\), l'axe des abscisses et les droites d'équations \(x = a\) et \(x = b\).</p>
+  </div>
+
+  <h3>Extension au cas général</h3>
+
+  <div class="def-box">
+    <p>Pour une fonction <strong>continue quelconque</strong> (éventuellement de signe variable) sur \([a, b]\) :</p>
+    <p>On appelle <strong>intégrale de \(f\) sur \([a, b]\)</strong> la quantité :</p>
+    <div class="math-display">
+      \[\int_a^b f(x)\,dx = (\text{aires au-dessus de l'axe}) - (\text{aires en dessous de l'axe})\]
+    </div>
+    <p>Il s'agit d'une <em>aire algébrique</em> (peut être négative).</p>
+    <p>Par convention : \(\displaystyle\int_a^b f(x)\,dx = -\int_b^a f(x)\,dx\) et \(\displaystyle\int_a^a f(x)\,dx = 0\).</p>
+  </div>
+
+  <h3>Interprétation graphique</h3>
+  <p>Le symbole \(\int\) est un « S » allongé (Somme). \(f(x)\,dx\) représente l'aire d'un rectangle infiniment mince de hauteur \(f(x)\) et de largeur \(dx\). L'intégrale en est la somme limite.</p>
+
+  <div class="example-box">
+    <strong>Exemple</strong>
+    <p>\(\displaystyle\int_0^2 x\,dx = \left[\frac{x^2}{2}\right]_0^2 = 2 - 0 = 2\)</p>
+    <p>C'est l'aire du triangle de base 2 et de hauteur 2 : \(\frac{1}{2}\times 2\times 2 = 2\). ✓</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple — Signe de l'intégrale</strong>
+    <p>\(\displaystyle\int_0^\pi \sin x\,dx = \big[-\cos x\big]_0^\pi = -\cos\pi + \cos 0 = 1+1 = 2 > 0\)</p>
+    <p>\(\displaystyle\int_\pi^{2\pi} \sin x\,dx = \big[-\cos x\big]_\pi^{2\pi} = -\cos 2\pi + \cos\pi = -1-1 = -2 < 0\)</p>
+  </div>
+</section>
+
+<!-- ══ 03 PROPRIÉTÉS ══ -->
+<section class="section fade-in" id="proprietes">
+  <span class="section-num">03</span>
+  <h2>Propriétés de l'intégrale</h2>
+
+  <div class="prop-box">
+    <h3 style="color:var(--gold);text-transform:none;font-size:1rem;margin-top:0;margin-bottom:0.6rem">Linéarité</h3>
+    <p>Pour tous réels \(\lambda, \mu\) et fonctions \(f, g\) continues sur \([a,b]\) :</p>
+    \[\int_a^b \bigl(\lambda f(x) + \mu g(x)\bigr)\,dx = \lambda\int_a^b f(x)\,dx + \mu\int_a^b g(x)\,dx\]
+  </div>
+
+  <div class="prop-box">
+    <h3 style="color:var(--gold);text-transform:none;font-size:1rem;margin-top:0;margin-bottom:0.6rem">Relation de Chasles</h3>
+    <p>Pour tout réel \(c\) dans ou en dehors de \([a,b]\) :</p>
+    \[\int_a^b f(x)\,dx = \int_a^c f(x)\,dx + \int_c^b f(x)\,dx\]
+    <p style="font-size:0.9rem;margin-top:0.5rem">Utile pour découper l'intervalle là où \(f\) change de signe.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="prop-box">
+      <h3 style="color:var(--gold);text-transform:none;font-size:1rem;margin-top:0;margin-bottom:0.6rem">Positivité &amp; Croissance</h3>
+      <p>Si \(f \geq 0\) sur \([a,b]\), alors \(\displaystyle\int_a^b f \geq 0\).</p>
+      <p>Si \(f \leq g\) sur \([a,b]\), alors \(\displaystyle\int_a^b f \leq \int_a^b g\).</p>
+    </div>
+    <div class="prop-box">
+      <h3 style="color:var(--gold);text-transform:none;font-size:1rem;margin-top:0;margin-bottom:0.6rem">Majoration</h3>
+      <p>Si \(m \leq f \leq M\) sur \([a,b]\), alors :</p>
+      \[m(b-a)\leq\int_a^b f(x)\,dx\leq M(b-a)\]
+    </div>
+  </div>
+
+  <div class="prop-box">
+    <h3 style="color:var(--gold);text-transform:none;font-size:1rem;margin-top:0;margin-bottom:0.6rem">Inégalité triangulaire</h3>
+    \[\left|\int_a^b f(x)\,dx\right|\leq\int_a^b |f(x)|\,dx\]
+  </div>
+
+  <h3>Valeur moyenne</h3>
+  <div class="def-box">
+    <p>La <strong>valeur moyenne</strong> de \(f\) sur \([a, b]\) est :</p>
+    \[\mu = \frac{1}{b-a}\int_a^b f(x)\,dx\]
+    <p style="font-size:0.9rem;margin-top:0.6rem">C'est la valeur constante \(\mu\) telle que le rectangle de base \([a,b]\) et de hauteur \(\mu\) a la même aire que l'intégrale de \(f\).</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple — Valeur moyenne</strong>
+    <p>Valeur moyenne de \(f(x) = x^2\) sur \([0, 3]\) :</p>
+    <p>\(\mu = \dfrac{1}{3}\displaystyle\int_0^3 x^2\,dx = \dfrac{1}{3}\left[\dfrac{x^3}{3}\right]_0^3 = \dfrac{1}{3}\cdot 9 = 3\)</p>
+  </div>
+</section>
+
+<!-- ══ 04 THÉORÈME FONDAMENTAL ══ -->
+<section class="section fade-in" id="tfa">
+  <span class="section-num">04</span>
+  <h2>Théorème Fondamental de l'Analyse</h2>
+
+  <div class="thm-box">
+    <p><strong>Théorème fondamental (version primitive → intégrale) :</strong></p>
+    <p>Soit \(f\) continue sur \([a, b]\) et \(F\) une primitive de \(f\) sur \([a, b]\). Alors :</p>
+    \[\int_a^b f(x)\,dx = \bigl[F(x)\bigr]_a^b = F(b) - F(a)\]
+  </div>
+
+  <div class="thm-box">
+    <p><strong>Théorème fondamental (version intégrale → primitive) :</strong></p>
+    <p>Soit \(f\) continue sur \(I\) et \(a \in I\). La fonction \(F\) définie par :</p>
+    \[F(x) = \int_a^x f(t)\,dt\]
+    <p>est l'<strong>unique</strong> primitive de \(f\) sur \(I\) qui s'annule en \(a\). En particulier, \(F'(x) = f(x)\).</p>
+  </div>
+
+  <details class="proof">
+    <summary>Démonstration — F(b) - F(a)</summary>
+    <div class="proof-body">
+      <p>Soit \(G\) une autre primitive de \(f\). Alors \(G = F + C\) pour une constante \(C\).</p>
+      <p>On sait que \(\displaystyle\int_a^b f(x)\,dx = G(b) - G(a) = (F(b)+C)-(F(a)+C) = F(b)-F(a)\).</p>
+      <p>La constante \(C\) s'annule, ce qui justifie que le choix de la primitive importe peu. \(\blacksquare\)</p>
+    </div>
+  </details>
+
+  <details class="proof">
+    <summary>Démonstration — F'(x) = f(x)</summary>
+    <div class="proof-body">
+      <p>On calcule le taux d'accroissement de \(F(x) = \int_a^x f(t)\,dt\) :</p>
+      <p>\(\dfrac{F(x+h)-F(x)}{h} = \dfrac{1}{h}\displaystyle\int_x^{x+h}f(t)\,dt\)</p>
+      <p>Par la propriété de la valeur moyenne, cette expression tend vers \(f(x)\) quand \(h\to 0\)
+      (car \(f\) est continue en \(x\)). Donc \(F'(x) = f(x)\). \(\blacksquare\)</p>
+    </div>
+  </details>
+
+  <h3>Méthode de calcul — crochet</h3>
+  <div class="example-box">
+    <strong>Méthode générale</strong>
+    <p>1. Trouver une primitive \(F\) de \(f\) (ignorer la constante \(C\)).</p>
+    <p>2. Calculer \(\big[F(x)\big]_a^b = F(b) - F(a)\).</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple</strong>
+    <p>\(\displaystyle\int_1^3 (2x+1)\,dx = \big[x^2+x\big]_1^3 = (9+3)-(1+1) = 12 - 2 = 10\)</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple</strong>
+    <p>\(\displaystyle\int_0^{\pi/2} \cos x\,dx = \big[\sin x\big]_0^{\pi/2} = \sin\tfrac{\pi}{2} - \sin 0 = 1 - 0 = 1\)</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple</strong>
+    <p>\(\displaystyle\int_1^e \frac{1}{x}\,dx = \big[\ln x\big]_1^e = \ln e - \ln 1 = 1 - 0 = 1\)</p>
+  </div>
+</section>
+
+<!-- ══ 05 MÉTHODES ══ -->
+<section class="section fade-in" id="methodes">
+  <span class="section-num">05</span>
+  <h2>Méthodes de calcul</h2>
+
+  <h3>Intégration par parties (IPP)</h3>
+
+  <div class="thm-box">
+    <p>Si \(u\) et \(v\) sont dérivables sur \([a,b]\) et \(u'v\) intégrable, alors :</p>
+    \[\int_a^b u(x)\,v'(x)\,dx = \bigl[u(x)\,v(x)\bigr]_a^b - \int_a^b u'(x)\,v(x)\,dx\]
+  </div>
+
+  <details class="proof">
+    <summary>Démonstration (règle du produit)</summary>
+    <div class="proof-body">
+      <p>La règle de dérivation du produit donne \((uv)' = u'v + uv'\).</p>
+      <p>Donc \(uv' = (uv)' - u'v\).</p>
+      <p>En intégrant des deux côtés sur \([a,b]\) :</p>
+      <p>\(\displaystyle\int_a^b uv'\,dx = \bigl[uv\bigr]_a^b - \int_a^b u'v\,dx\) \(\blacksquare\)</p>
+    </div>
+  </details>
+
+  <p style="font-family:var(--mono);font-size:0.82rem;color:var(--muted);margin-bottom:0.5rem">Conseil mnémotechnique pour choisir \(u\) et \(v'\) : <strong>LIATE</strong> (Logarithme, Inverse trig, Algébrique, Trig, Exp) — choisir \(u\) dans l'ordre LIATE.</p>
+
+  <div class="example-box">
+    <strong>Exemple — \(\int_0^1 xe^x\,dx\)</strong>
+    <p>On pose \(u = x\), \(v' = e^x\), donc \(u' = 1\), \(v = e^x\).</p>
+    <p>\(\displaystyle\int_0^1 xe^x\,dx = \big[xe^x\big]_0^1 - \int_0^1 e^x\,dx = e - \big[e^x\big]_0^1 = e - (e-1) = 1\)</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple — \(\int_1^e \ln x\,dx\)</strong>
+    <p>On pose \(u = \ln x\), \(v' = 1\), donc \(u' = 1/x\), \(v = x\).</p>
+    <p>\(\displaystyle\int_1^e \ln x\,dx = \big[x\ln x\big]_1^e - \int_1^e 1\,dx = e - \big[x\big]_1^e = e-(e-1) = 1\)</p>
+  </div>
+
+  <h3>Changement de variable</h3>
+
+  <div class="thm-box">
+    <p>Soit \(\varphi : [\alpha, \beta] \to [a, b]\) de classe \(C^1\) avec \(\varphi(\alpha)=a\), \(\varphi(\beta)=b\) :</p>
+    \[\int_a^b f(x)\,dx = \int_\alpha^\beta f\bigl(\varphi(t)\bigr)\,\varphi'(t)\,dt\]
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple — \(\int_0^1 2x\sqrt{x^2+1}\,dx\)</strong>
+    <p>On pose \(u = x^2+1\), donc \(du = 2x\,dx\). Pour \(x=0\), \(u=1\) ; pour \(x=1\), \(u=2\).</p>
+    <p>\(\displaystyle\int_0^1 2x\sqrt{x^2+1}\,dx = \int_1^2 \sqrt{u}\,du = \left[\frac{2}{3}u^{3/2}\right]_1^2 = \frac{2}{3}(2\sqrt{2}-1)\)</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple — \(\int_0^{\pi/4} \tan x\,dx\)</strong>
+    <p>\(\tan x = \dfrac{\sin x}{\cos x}\). On pose \(u = \cos x\), \(du = -\sin x\,dx\).</p>
+    <p>Pour \(x=0\), \(u=1\) ; pour \(x=\pi/4\), \(u=\frac{\sqrt{2}}{2}\).</p>
+    <p>\(\displaystyle = -\int_1^{\sqrt{2}/2}\frac{du}{u} = \big[\ln u\big]_{\sqrt{2}/2}^1 = -\ln\frac{\sqrt{2}}{2} = \frac{1}{2}\ln 2\)</p>
+  </div>
+</section>
+
+<!-- ══ 06 TABLE ══ -->
+<section class="section fade-in" id="table">
+  <span class="section-num">06</span>
+  <h2>Table des intégrales usuelles</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Fonction \(f(x)\)</th>
+          <th>Primitive \(F(x)\)</th>
+          <th>Intégrale \(\int_a^b f\,dx\)</th>
+          <th>Conditions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>\(k\)</td>
+          <td>\(kx\)</td>
+          <td>\(k(b-a)\)</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>\(x^n\)</td>
+          <td>\(\dfrac{x^{n+1}}{n+1}\)</td>
+          <td>\(\dfrac{b^{n+1}-a^{n+1}}{n+1}\)</td>
+          <td>\(n \neq -1\)</td>
+        </tr>
+        <tr>
+          <td>\(\dfrac{1}{x}\)</td>
+          <td>\(\ln|x|\)</td>
+          <td>\(\ln\dfrac{b}{a}\)</td>
+          <td>\(0 < a \leq b\)</td>
+        </tr>
+        <tr>
+          <td>\(e^x\)</td>
+          <td>\(e^x\)</td>
+          <td>\(e^b - e^a\)</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>\(e^{ax}\)</td>
+          <td>\(\dfrac{e^{ax}}{a}\)</td>
+          <td>\(\dfrac{e^{ab}-e^{a^2}}{a}\)</td>
+          <td>\(a \neq 0\)</td>
+        </tr>
+        <tr>
+          <td>\(\cos x\)</td>
+          <td>\(\sin x\)</td>
+          <td>\(\sin b - \sin a\)</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>\(\sin x\)</td>
+          <td>\(-\cos x\)</td>
+          <td>\(\cos a - \cos b\)</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>\(\dfrac{1}{\sqrt{x}}\)</td>
+          <td>\(2\sqrt{x}\)</td>
+          <td>\(2(\sqrt{b}-\sqrt{a})\)</td>
+          <td>\(0 < a \leq b\)</td>
+        </tr>
+        <tr>
+          <td>\(\sqrt{x}\)</td>
+          <td>\(\dfrac{2}{3}x^{3/2}\)</td>
+          <td>\(\dfrac{2}{3}(b^{3/2}-a^{3/2})\)</td>
+          <td>\(a, b \geq 0\)</td>
+        </tr>
+        <tr>
+          <td>\(\ln x\)</td>
+          <td>\(x\ln x - x\)</td>
+          <td>\(b\ln b - a\ln a - (b-a)\)</td>
+          <td>\(0 < a \leq b\)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Primitives composées utiles</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Forme \(f(x)\)</th>
+          <th>Primitive \(F(x)\)</th>
+          <th>Exemple</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>\(u' \cdot e^u\)</td>
+          <td>\(e^u\)</td>
+          <td>\(2xe^{x^2}\) → \(e^{x^2}\)</td>
+        </tr>
+        <tr>
+          <td>\(\dfrac{u'}{u}\)</td>
+          <td>\(\ln|u|\)</td>
+          <td>\(\dfrac{2x}{x^2+1}\) → \(\ln(x^2+1)\)</td>
+        </tr>
+        <tr>
+          <td>\(u' \cdot u^n\)</td>
+          <td>\(\dfrac{u^{n+1}}{n+1}\)</td>
+          <td>\(3x^2(x^3+1)^4\) → \(\dfrac{(x^3+1)^5}{5}\)</td>
+        </tr>
+        <tr>
+          <td>\(u'\cos u\)</td>
+          <td>\(\sin u\)</td>
+          <td>\(\cos x \cdot e^{\sin x}\) → \(e^{\sin x}\)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ 07 CALCULATEUR ══ -->
+<section class="section fade-in" id="calculateur">
+  <span class="section-num">07</span>
+  <h2>Calculateur d'intégrales</h2>
+
+  <div class="calc-box">
+    <div class="calc-row">
+      <span class="calc-label">Fonction :</span>
+      <select id="calc-func">
+        <option value="x2">x²</option>
+        <option value="x3">x³</option>
+        <option value="sinx">sin(x)</option>
+        <option value="cosx">cos(x)</option>
+        <option value="ex">eˣ</option>
+        <option value="invx">1/x (x&gt;0)</option>
+        <option value="sqrtx">√x</option>
+        <option value="lnx">ln(x) [IPP]</option>
+        <option value="xex">x·eˣ [IPP]</option>
+        <option value="x2sinx">x²sin(x) [IPP ×2]</option>
+      </select>
+    </div>
+    <div class="calc-row">
+      <span class="calc-label">\(a\) =</span>
+      <input type="number" id="calc-a" value="0" step="0.5" style="width:80px">
+      <span class="calc-label" style="min-width:40px">\(b\) =</span>
+      <input type="number" id="calc-b" value="1" step="0.5" style="width:80px">
+    </div>
+    <button class="calc-btn" onclick="computeIntegral()">Calculer ∫</button>
+    <div class="calc-result" id="calc-result">— en attente —</div>
+  </div>
+
+  <h3>Valeur moyenne</h3>
+  <div class="calc-box">
+    <div class="calc-row">
+      <span class="calc-label">Fonction :</span>
+      <select id="mean-func">
+        <option value="x2">x²</option>
+        <option value="sinx">sin(x)</option>
+        <option value="cosx">cos(x)</option>
+        <option value="ex">eˣ</option>
+        <option value="sqrtx">√x</option>
+      </select>
+    </div>
+    <div class="calc-row">
+      <span class="calc-label">\(a\) =</span>
+      <input type="number" id="mean-a" value="0" step="0.5" style="width:80px">
+      <span class="calc-label" style="min-width:40px">\(b\) =</span>
+      <input type="number" id="mean-b" value="3" step="0.5" style="width:80px">
+    </div>
+    <button class="calc-btn" onclick="computeMean()">Calculer la valeur moyenne</button>
+    <div class="calc-result" id="mean-result">— en attente —</div>
+  </div>
+</section>
+
+<!-- ══ 08 APPLICATIONS ══ -->
+<section class="section fade-in" id="applications">
+  <span class="section-num">08</span>
+  <h2>Applications géométriques</h2>
+
+  <h3>Aire entre deux courbes</h3>
+  <div class="prop-box">
+    <p>L'aire du domaine compris entre les courbes de \(f\) et \(g\) sur \([a, b]\) (avec \(f \geq g\)) est :</p>
+    \[\mathcal{A} = \int_a^b \bigl[f(x) - g(x)\bigr]\,dx\]
+    <p style="font-size:0.9rem;margin-top:0.5rem">Si \(f\) et \(g\) se croisent, découper avec la relation de Chasles et prendre la valeur absolue de chaque partie.</p>
+  </div>
+
+  <div class="example-box">
+    <strong>Exemple — Aire entre une parabole et une droite</strong>
+    <p>Soit \(f(x) = x^2\) et \(g(x) = x\). Intersection : \(x^2 = x \Leftrightarrow x = 0\) ou \(x = 1\).</p>
+    <p>Sur \([0,1]\), \(g \geq f\) donc :</p>
+    <p>\(\mathcal{A} = \displaystyle\int_0^1 (x - x^2)\,dx = \left[\frac{x^2}{2}-\frac{x^3}{3}\right]_0^1 = \frac{1}{2} - \frac{1}{3} = \frac{1}{6}\)</p>
+  </div>
+
+  <h3>Calculateur d'aire entre deux courbes</h3>
+  <div class="calc-box">
+    <div class="calc-row">
+      <span class="calc-label">f(x) :</span>
+      <select id="area-f">
+        <option value="x">x</option>
+        <option value="x2">x²</option>
+        <option value="sqrtx">√x</option>
+        <option value="sinx">sin(x)</option>
+        <option value="ex">eˣ</option>
+      </select>
+    </div>
+    <div class="calc-row">
+      <span class="calc-label">g(x) :</span>
+      <select id="area-g">
+        <option value="x2">x²</option>
+        <option value="zero">0</option>
+        <option value="x">x</option>
+        <option value="sinx">sin(x)</option>
+      </select>
+    </div>
+    <div class="calc-row">
+      <span class="calc-label">\(a\) =</span>
+      <input type="number" id="area-a" value="0" step="0.25" style="width:80px">
+      <span class="calc-label" style="min-width:40px">\(b\) =</span>
+      <input type="number" id="area-b" value="1" step="0.25" style="width:80px">
+    </div>
+    <button class="calc-btn" onclick="computeArea()">Calculer l'aire</button>
+    <div class="calc-result" id="area-result">— en attente —</div>
+  </div>
+
+  <h3>Visualisation — Aire sous la courbe</h3>
+  <div class="chart-wrap">
+    <div class="riemann-controls">
+      <label>Fonction :
+        <select id="viz-func" onchange="drawAreaChart()">
+          <option value="x2">f(x) = x²</option>
+          <option value="sinx">f(x) = sin(x)</option>
+          <option value="sqrtx">f(x) = √x</option>
+          <option value="ex">f(x) = eˣ/3</option>
+        </select>
+      </label>
+      <label>a : <input type="number" id="viz-a" value="0" step="0.5" style="width:55px;border:1px solid var(--border);padding:0.2rem 0.3rem;font-size:0.8rem" onchange="drawAreaChart()"></label>
+      <label>b : <input type="number" id="viz-b" value="2" step="0.5" style="width:55px;border:1px solid var(--border);padding:0.2rem 0.3rem;font-size:0.8rem" onchange="drawAreaChart()"></label>
+    </div>
+    <canvas id="areaChart"></canvas>
+  </div>
+
+  <h3>Applications physiques et économiques</h3>
+  <div class="two-col">
+    <div class="example-box">
+      <strong>Énergie dissipée (Physique)</strong>
+      <p>Si \(P(t)\) est la puissance en Watts, l'énergie dissipée entre \(t_1\) et \(t_2\) est :</p>
+      <p>\(E = \displaystyle\int_{t_1}^{t_2} P(t)\,dt\) (en Joules)</p>
+    </div>
+    <div class="example-box">
+      <strong>Surplus du consommateur (Éco.)</strong>
+      <p>Si \(p(q)\) est le prix de demande et \(p^*\) le prix d'équilibre :</p>
+      <p>\(SC = \displaystyle\int_0^{q^*} [p(q)-p^*]\,dq\)</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 09 RIEMANN ══ -->
+<section class="section fade-in" id="riemann">
+  <span class="section-num">09</span>
+  <h2>Sommes de Riemann</h2>
+
+  <div class="def-box">
+    <p>Pour une fonction \(f\) continue sur \([a,b]\), on divise \([a,b]\) en \(n\) sous-intervalles de longueur \(h = \dfrac{b-a}{n}\). La <strong>somme de Riemann</strong> est :</p>
+    \[S_n = h\sum_{k=0}^{n-1} f(a + kh) \xrightarrow[n\to\infty]{} \int_a^b f(x)\,dx\]
+    <p style="font-size:0.9rem;margin-top:0.5rem">C'est la justification de la définition : l'intégrale est la limite des sommes de rectangles.</p>
+  </div>
+
+  <h3>Visualisation interactive — Sommes de Riemann</h3>
+  <div class="chart-wrap">
+    <div class="riemann-controls">
+      <label>Fonction :
+        <select id="riemann-func" onchange="drawRiemann()">
+          <option value="x2">f(x) = x²</option>
+          <option value="sinx">f(x) = sin(x)</option>
+          <option value="sqrtx">f(x) = √x</option>
+          <option value="x3">f(x) = x³/4</option>
+        </select>
+      </label>
+      <label><strong>n = <span id="n-label">5</span></strong>
+        <input type="range" id="riemann-n" min="1" max="100" value="5" oninput="document.getElementById('n-label').textContent=this.value;drawRiemann()">
+      </label>
+      <label>Type :
+        <select id="riemann-type" onchange="drawRiemann()">
+          <option value="left">Gauche</option>
+          <option value="right">Droite</option>
+          <option value="mid">Milieu</option>
+        </select>
+      </label>
+    </div>
+    <canvas id="riemannChart"></canvas>
+    <div id="riemann-info" style="font-family:var(--mono);font-size:0.82rem;color:var(--muted);margin-top:0.6rem;padding:0.5rem;background:var(--cream)"></div>
+  </div>
+</section>
+
+<!-- ══ 10 QCM ══ -->
+<section class="section fade-in" id="qcm-section">
+  <span class="section-num">10</span>
+  <h2>QCM — Auto-évaluation</h2>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+    <p style="font-size:0.9rem;color:var(--muted);font-family:var(--mono)">6 questions tirées aléatoirement — les valeurs changent à chaque session.</p>
+    <button class="calc-btn" onclick="generateQCM()" style="background:var(--accent2);">↺ Nouveau QCM</button>
+  </div>
+
+  <div id="qcm-container"></div>
+
+  <div class="qcm-score-box" id="qcm-score" style="display:none">
+    <p style="font-family:var(--mono);font-size:0.8rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.3rem">SCORE FINAL</p>
+    <div class="qcm-score-val" id="score-val"></div>
+    <p id="score-msg" style="font-family:var(--mono);margin-top:0.5rem;opacity:0.7"></p>
+  </div>
+</section>
+
+<!-- ══ 11 CONTACT ══ -->
+<section class="section fade-in" id="contact">
+  <span class="section-num">11</span>
+  <h2>Contact &amp; Ressources</h2>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:1rem;">
+
+    <!-- QR 1 : Google Forms -->
+    <div style="background:var(--cream);border:1px solid var(--border);padding:1.4rem;text-align:center;">
+      <p style="font-family:var(--mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem">Formulaire</p>
+      <a class="cc" href="https://docs.google.com/forms/d/e/1FAIpQLSfiOvJG1wicFQY8EQufqy5YxGgTPSFPxdyb-OAtk95SUGxWFA/viewform" target="_blank" rel="noopener">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&color=f5c842&bgcolor=0a1e34&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSfiOvJG1wicFQY8EQufqy5YxGgTPSFPxdyb-OAtk95SUGxWFA%2Fviewform" alt="QR">
+        <p style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);margin-top:0.2rem">Google Forms ↗</p>
+      </a>
+      <p style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)">Avis, erreur, question</p>
+    </div>
+
+    <!-- QR 2 : Collaborations -->
+    <div style="background:var(--cream);border:1px solid var(--border);padding:1.4rem;text-align:center;">
+      <p style="font-family:var(--mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:0.8rem">Profs/tuteurs — 45 min</p>
+      <a class="cc" href="https://calendly.com/didaskalosmanthanon/appel-pro-formation-ou-collaboration-45-min" target="_blank" rel="noopener">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&color=50d890&bgcolor=0a1e34&data=https%3A%2F%2Fcalendly.com%2Fdidaskalosmanthanon%2Fappel-pro-formation-ou-collaboration-45-min" alt="QR">
+        <p style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);margin-top:0.2rem">Calendly ↗</p>
+      </a>
+      <p style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)">Formation, collaboration</p>
+    </div>
+
+    <!-- QR 3 : pour les parents -->
+    <div style="background:var(--cream);border:1px solid var(--border);padding:1.4rem;text-align:center;">
+      <p style="font-family:var(--mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem">Parents — 15 min</p>
+      <a class="cc" href="https://calendly.com/didaskalosmanthanon/point-parents-presentation-de-l-outil-15-min" target="_blank" rel="noopener">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&color=a078f0&bgcolor=0a1e34&data=https%3A%2F%2Fcalendly.com%2Fdidaskalosmanthanon%2Fpoint-parents-presentation-de-l-outil-15-min" alt="QR">
+        <p style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);margin-top:0.2rem">Calendly ↗</p>
+      </a>
+      <p style="font-family:var(--mono);font-size:0.75rem;color:var(--muted)">Présentation &amp; suivi</p>
+    </div>
+
+  </div>
+
+  <p style="text-align:center;margin-top:2.5rem;font-size:.74rem;color:var(--ink3);font-family:var(--font-m);letter-spacing:.06em;">
+    TERMINALE · SPÉCIALITÉ MATHÉMATIQUES ·
+    <a href="https://eduscol.education.gouv.fr/sites/default/files/document/spe246annexe1158907pdf-84159.pdf"
+       target="_blank" style="color:var(--yellow);text-decoration:none;">PROGRAMME OFFICIEL ÉDUSCOL</a>
+    · CALCUL INTEGRAL (P. 15)
+  </p>
+</section>
+
+</main>
+
+<script>
+// ── MATHJAX CONFIG ──
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]']] },
+  startup: { typeset: true }
+};
+
+// ── SCROLL ANIMATION ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── NAV ACTIVE ──
+const navLinks = document.querySelectorAll('nav a');
+const sections = document.querySelectorAll('.section');
+const secObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = e.target.id;
+      const link = document.querySelector(`nav a[href="#${id}"]`);
+      if(link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => secObserver.observe(s));
+
+// ── FUNCTIONS ──
+const funcs = {
+  x2:   { f: x => x*x,           F: x => x*x*x/3,                  label: 'x²' },
+  x3:   { f: x => x*x*x,         F: x => x*x*x*x/4,                label: 'x³' },
+  sinx: { f: x => Math.sin(x),   F: x => -Math.cos(x),             label: 'sin(x)' },
+  cosx: { f: x => Math.cos(x),   F: x => Math.sin(x),              label: 'cos(x)' },
+  ex:   { f: x => Math.exp(x),   F: x => Math.exp(x),              label: 'eˣ' },
+  invx: { f: x => 1/x,           F: x => Math.log(Math.abs(x)),    label: '1/x' },
+  sqrtx:{ f: x => Math.sqrt(Math.max(x,0)), F: x => 2/3*Math.pow(Math.max(x,0),1.5), label: '√x' },
+  lnx:  { f: x => Math.log(Math.max(x,1e-9)), F: x => x*Math.log(Math.max(x,1e-9))-x, label: 'ln(x)', ipp: true },
+  xex:  { f: x => x*Math.exp(x), F: x => (x-1)*Math.exp(x),       label: 'x·eˣ', ipp: true },
+  x2sinx:{ f: x => x*x*Math.sin(x), F: x => (2-x*x)*Math.cos(x)+2*x*Math.sin(x), label: 'x²sin(x)', ipp: true },
+  x:    { f: x => x,             F: x => x*x/2,                    label: 'x' },
+  zero: { f: x => 0,             F: x => 0,                        label: '0' },
+  x3d4: { f: x => x*x*x/4,      F: x => x*x*x*x/16,               label: 'x³/4' },
+};
+
+function integrate(key, a, b) {
+  const fn = funcs[key];
+  if(!fn) return NaN;
+  return fn.F(b) - fn.F(a);
+}
+
+function numericalIntegrate(key, a, b, n=1000) {
+  const fn = funcs[key];
+  if(!fn) return NaN;
+  const h = (b-a)/n;
+  let s = 0;
+  for(let i=0;i<n;i++) s += fn.f(a + (i+0.5)*h);
+  return s*h;
+}
+
+function round4(x) { return Math.round(x*10000)/10000; }
+
+function computeIntegral() {
+  const key = document.getElementById('calc-func').value;
+  const a = parseFloat(document.getElementById('calc-a').value);
+  const b = parseFloat(document.getElementById('calc-b').value);
+  const el = document.getElementById('calc-result');
+  if(a >= b) { el.innerHTML = '<span style="color:#e06060">Erreur : a doit être < b</span>'; return; }
+  const val = numericalIntegrate(key, a, b);
+  const fn = funcs[key];
+  const method = fn.ipp ? '(intégration par parties — approximation numérique)' : '(primitive exacte)';
+  el.innerHTML = `<span class="result-val">∫<sub>${a}</sub><sup>${b}</sup> ${fn.label} dx ≈ <strong>${round4(val)}</strong></span> <span style="opacity:0.6;font-size:0.8rem">${method}</span>`;
+  if(typeof MathJax !== 'undefined') MathJax.typesetPromise([el]);
+}
+
+function computeMean() {
+  const key = document.getElementById('mean-func').value;
+  const a = parseFloat(document.getElementById('mean-a').value);
+  const b = parseFloat(document.getElementById('mean-b').value);
+  const el = document.getElementById('mean-result');
+  if(a >= b) { el.innerHTML = '<span style="color:#e06060">Erreur : a doit être < b</span>'; return; }
+  const val = numericalIntegrate(key, a, b);
+  const mean = val / (b - a);
+  const fn = funcs[key];
+  el.innerHTML = `<span class="result-val">μ = 1/(${b}-${a}) × ∫ = <strong>${round4(mean)}</strong></span>`;
+}
+
+function computeArea() {
+  const kf = document.getElementById('area-f').value;
+  const kg = document.getElementById('area-g').value;
+  const a = parseFloat(document.getElementById('area-a').value);
+  const b = parseFloat(document.getElementById('area-b').value);
+  const el = document.getElementById('area-result');
+  if(a >= b) { el.innerHTML = '<span style="color:#e06060">Erreur : a doit être < b</span>'; return; }
+  // numerical
+  const n = 1000;
+  const h = (b-a)/n;
+  let s = 0;
+  const ff = funcs[kf].f, gf = funcs[kg].f;
+  for(let i=0;i<n;i++) {
+    const xi = a + (i+0.5)*h;
+    s += Math.abs(ff(xi) - gf(xi));
+  }
+  const area = s * h;
+  el.innerHTML = `<span class="result-val">Aire = |∫<sub>${a}</sub><sup>${b}</sup> [f - g] dx| ≈ <strong>${round4(area)}</strong> u.a.</span>`;
+}
+
+// ── AREA CHART ──
+let areaChartInst = null;
+function drawAreaChart() {
+  const key = document.getElementById('viz-func').value;
+  const a = parseFloat(document.getElementById('viz-a').value);
+  const b = parseFloat(document.getElementById('viz-b').value);
+  const fn = funcs[key].f;
+  const N = 200;
+  const step = (b - a) / N;
+  const labels = [], data = [], areaData = [];
+  for(let i = 0; i <= N; i++) {
+    const x = a + i * step;
+    labels.push(round4(x));
+    const y = fn(x);
+    data.push(y);
+    areaData.push(y);
+  }
+  const ctx = document.getElementById('areaChart').getContext('2d');
+  if(areaChartInst) areaChartInst.destroy();
+  areaChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: funcs[key].label,
+          data,
+          borderColor: '#c8402a',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: 'origin',
+          backgroundColor: 'rgba(200,64,42,0.15)'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 300 },
+      plugins: { legend: { labels: { font: { family: 'JetBrains Mono', size: 12 } } } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 8, font: { family: 'JetBrains Mono', size: 11 } } },
+        y: { ticks: { font: { family: 'JetBrains Mono', size: 11 } } }
+      }
+    }
+  });
+}
+drawAreaChart();
+
+// ── RIEMANN CHART ──
+let riemannChartInst = null;
+function drawRiemann() {
+  const key = document.getElementById('riemann-func').value;
+  const n = parseInt(document.getElementById('riemann-n').value);
+  const type = document.getElementById('riemann-type').value;
+  const fn = funcs[key].f;
+  const a = 0, b = 2;
+  const h = (b - a) / n;
+
+  // Background curve
+  const N = 200;
+  const curveLabels = [], curveData = [];
+  for(let i = 0; i <= N; i++) {
+    const x = a + i * (b-a)/N;
+    curveLabels.push(round4(x));
+    curveData.push(fn(x));
+  }
+
+  // Riemann rectangles as bar chart
+  const barLabels = [], barData = [];
+  let sum = 0;
+  for(let k = 0; k < n; k++) {
+    let xk;
+    if(type === 'left') xk = a + k * h;
+    else if(type === 'right') xk = a + (k+1) * h;
+    else xk = a + (k + 0.5) * h;
+    const yk = fn(xk);
+    barLabels.push(round4(a + (k+0.5)*h));
+    barData.push(yk);
+    sum += yk * h;
+  }
+
+  // Exact
+  const exact = numericalIntegrate(key, a, b, 2000);
+  document.getElementById('riemann-info').innerHTML =
+    `Approximation S<sub>${n}</sub> ≈ <strong>${round4(sum)}</strong> &nbsp;|&nbsp; Valeur exacte ≈ ${round4(exact)} &nbsp;|&nbsp; Erreur : ${round4(Math.abs(sum-exact))}`;
+
+  const ctx = document.getElementById('riemannChart').getContext('2d');
+  if(riemannChartInst) riemannChartInst.destroy();
+  riemannChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: barLabels,
+      datasets: [
+        {
+          type: 'bar',
+          label: `Rectangles (n=${n})`,
+          data: barData,
+          backgroundColor: 'rgba(42,108,142,0.4)',
+          borderColor: 'rgba(42,108,142,0.8)',
+          borderWidth: 1,
+          barPercentage: 1,
+          categoryPercentage: 1,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 200 },
+      plugins: {
+        legend: { labels: { font: { family: 'JetBrains Mono', size: 12 } } },
+        tooltip: { callbacks: { label: ctx => `f = ${round4(ctx.raw)}` } }
+      },
+      scales: {
+        x: { ticks: { maxTicksLimit: 10, font: { family: 'JetBrains Mono', size: 10 } } },
+        y: { ticks: { font: { family: 'JetBrains Mono', size: 11 } } }
+      }
+    }
+  });
+}
+drawRiemann();
+
+// ── QCM ALÉATOIRE ──
+// Banque de questions avec variables paramétrables
+function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function r4(x) { return Math.round(x * 10000) / 10000; }
+
+function makeQuestionBank() {
+  // Paramètres aléatoires
+  const n = rnd([2, 3, 4, 5]);           // exposant pour x^n
+  const a = rnd([1, 2, 3]);              // borne sup
+  const k = rnd([2, 3, 4]);             // coefficient
+  const p = rnd([2, 3]);                // pour (kx)^p
+  const c = rnd([1, 2, 3]);             // borne divers
+
+  // Q1 — ∫_0^a k·x^n dx
+  const q1_exact = k * Math.pow(a, n+1) / (n+1);
+  const q1_wrong1 = r4(k * a);
+  const q1_wrong2 = r4(k * Math.pow(a, n));
+  const q1_wrong3 = r4(k / (n+1));
+  const q1_opts = shuffle([
+    { label: `\\(${r4(q1_exact)}\\)`, correct: true },
+    { label: `\\(${q1_wrong1}\\)`, correct: false },
+    { label: `\\(${q1_wrong2}\\)`, correct: false },
+    { label: `\\(${q1_wrong3}\\)`, correct: false },
+  ]);
+
+  // Q2 — ∫_0^a e^x dx = e^a - 1
+  const q2_exact = r4(Math.exp(a) - 1);
+  const q2_opts = shuffle([
+    { label: `\\(e^{${a}} - 1 = ${q2_exact}\\)`, correct: true },
+    { label: `\\(e^{${a}}\\)`, correct: false },
+    { label: `\\(${a}e\\)`, correct: false },
+    { label: `\\(1 - e^{${a}}\\)`, correct: false },
+  ]);
+
+  // Q3 — propriété conceptuelle (fixe mais choix aléatoire dans 3 versions)
+  const q3_variants = [
+    {
+      q: `La propriété \\(\\int_a^b f = \\int_a^c f + \\int_c^b f\\) s'appelle :`,
+      opts: shuffle([
+        { label: 'Relation de Chasles', correct: true },
+        { label: 'Linéarité de l\'intégrale', correct: false },
+        { label: 'Théorème fondamental', correct: false },
+        { label: 'Inégalité triangulaire', correct: false },
+      ]),
+      expl: 'Elle permet de décomposer l\'intégrale sur tout point intermédiaire \\(c\\).'
+    },
+    {
+      q: `La valeur moyenne de \\(f\\) sur \\([a,b]\\) est définie par :`,
+      opts: shuffle([
+        { label: `\\(\\dfrac{1}{b-a}\\int_a^b f(x)\\,dx\\)`, correct: true },
+        { label: `\\(\\dfrac{f(a)+f(b)}{2}\\)`, correct: false },
+        { label: `\\(\\int_a^b f(x)\\,dx\\)`, correct: false },
+        { label: `\\(\\dfrac{1}{2}\\int_a^b f(x)\\,dx\\)`, correct: false },
+      ]),
+      expl: 'C\'est la hauteur du rectangle de même aire que l\'intégrale sur \\([a,b]\\).'
+    },
+    {
+      q: `Si \\(f \\geq 0\\) sur \\([a,b]\\), alors \\(\\int_a^b f(x)\\,dx\\) est :`,
+      opts: shuffle([
+        { label: 'Toujours \\(\\geq 0\\)', correct: true },
+        { label: 'Toujours \\(> 0\\)', correct: false },
+        { label: 'Toujours \\(= 0\\)', correct: false },
+        { label: 'Peut être négatif', correct: false },
+      ]),
+      expl: 'La positivité de \\(f\\) implique \\(\\int_a^b f \\geq 0\\) (égal à 0 si \\(f=0\\) partout).'
+    }
+  ];
+  const q3 = rnd(q3_variants);
+
+  // Q4 — ∫_1^c 1/x dx = ln(c)
+  const q4_exact = r4(Math.log(c + 1));
+  const q4_opts = shuffle([
+    { label: `\\(\\ln(${c+1})\\approx ${q4_exact}\\)`, correct: true },
+    { label: `\\(${c+1} - 1 = ${c}\\)`, correct: false },
+    { label: `\\(\\dfrac{1}{${c+1}}\\)`, correct: false },
+    { label: `\\(\\ln 1 = 0\\)`, correct: false },
+  ]);
+
+  // Q5 — IPP : choisir u et v'
+  const q5_variants = [
+    {
+      q: `Pour \\(\\int_0^1 x e^x\\,dx\\) par parties, on choisit :`,
+      opts: shuffle([
+        { label: `\\(u = x,\\; v' = e^x\\) (règle LIATE)`, correct: true },
+        { label: `\\(u = e^x,\\; v' = x\\)`, correct: false },
+        { label: `\\(u = 1,\\; v' = xe^x\\)`, correct: false },
+        { label: `\\(u = x^2,\\; v' = e^x\\)`, correct: false },
+      ]),
+      expl: `LIATE : Algébrique \\(x\\) avant Exponentielle. Résultat : \\(\\big[xe^x\\big]_0^1 - \\int_0^1 e^x\\,dx = 1\\).`
+    },
+    {
+      q: `Pour \\(\\int_1^e \\ln x\\,dx\\) par parties, on pose :`,
+      opts: shuffle([
+        { label: `\\(u = \\ln x,\\; v' = 1\\) (règle LIATE)`, correct: true },
+        { label: `\\(u = x,\\; v' = \\ln x\\)`, correct: false },
+        { label: `\\(u = 1/x,\\; v' = x\\)`, correct: false },
+        { label: `\\(u = 1,\\; v' = \\ln x\\)`, correct: false },
+      ]),
+      expl: `LIATE : Logarithme en premier. Résultat : \\(\\big[x\\ln x\\big]_1^e - \\int_1^e 1\\,dx = e - (e-1) = 1\\).`
+    }
+  ];
+  const q5 = rnd(q5_variants);
+
+  // Q6 — changement de variable
+  const q6_variants = [
+    {
+      q: `Pour \\(\\int_0^1 ${k}x \\cdot e^{x^2}\\,dx\\), le meilleur changement est :`,
+      opts: shuffle([
+        { label: `\\(u = x^2,\\; du = 2x\\,dx\\)`, correct: true },
+        { label: `\\(u = e^x\\)`, correct: false },
+        { label: `\\(u = \\ln x\\)`, correct: false },
+        { label: `\\(u = x^2 + 1\\)`, correct: false },
+      ]),
+      expl: `On obtient \\(\\frac{${k}}{2}\\int_0^1 e^u\\,du = \\frac{${k}}{2}(e-1)\\approx ${r4(k/2*(Math.E-1))}\\).`
+    },
+    {
+      q: `Pour \\(\\int_0^1 \\dfrac{${2*k}x}{x^2+1}\\,dx\\), la substitution naturelle est :`,
+      opts: shuffle([
+        { label: `\\(u = x^2+1,\\; du = 2x\\,dx\\)`, correct: true },
+        { label: `\\(u = x^2\\)`, correct: false },
+        { label: `\\(u = \\ln(x^2+1)\\)`, correct: false },
+        { label: `\\(u = x+1\\)`, correct: false },
+      ]),
+      expl: `La forme \\(u'/u\\) donne \\(${k}\\big[\\ln(x^2+1)\\big]_0^1 = ${k}\\ln 2\\approx ${r4(k*Math.log(2))}\\).`
+    }
+  ];
+  const q6 = rnd(q6_variants);
+
+  return [
+    {
+      q: `Calculer \\(\\displaystyle\\int_0^{${a}} ${k}x^{${n}}\\,dx\\)`,
+      opts: q1_opts,
+      expl: `\\(\\Big[\\dfrac{${k}x^{${n+1}}}{${n+1}}\\Big]_0^{${a}} = \\dfrac{${k}\\times${a}^{${n+1}}}{${n+1}} = ${r4(q1_exact)}\\)`
+    },
+    {
+      q: `Quelle est la valeur de \\(\\displaystyle\\int_0^{${a}} e^x\\,dx\\) ?`,
+      opts: q2_opts,
+      expl: `\\(\\big[e^x\\big]_0^{${a}} = e^{${a}} - e^0 = e^{${a}} - 1 \\approx ${q2_exact}\\)`
+    },
+    q3,
+    {
+      q: `Calculer \\(\\displaystyle\\int_1^{${c+1}} \\frac{1}{x}\\,dx\\)`,
+      opts: q4_opts,
+      expl: `\\(\\big[\\ln x\\big]_1^{${c+1}} = \\ln(${c+1}) - \\ln 1 = \\ln(${c+1}) \\approx ${q4_exact}\\)`
+    },
+    q5,
+    q6,
+  ];
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let qcmScore = 0, qcmAnswered = 0, totalQ = 6;
+
+function generateQCM() {
+  qcmScore = 0;
+  qcmAnswered = 0;
+  const container = document.getElementById('qcm-container');
+  const scoreBox = document.getElementById('qcm-score');
+  scoreBox.style.display = 'none';
+  document.getElementById('score-val').textContent = '';
+  document.getElementById('score-msg').textContent = '';
+
+  const questions = makeQuestionBank();
+  totalQ = questions.length;
+
+  container.innerHTML = questions.map((q, i) => {
+    const qid = `rq${i}`;
+    const opts = q.opts.map((o, j) => `
+      <label class="qcm-option">
+        <input type="radio" name="${qid}" value="${j}" data-correct="${o.correct}">
+        ${o.label}
+      </label>`).join('');
+    return `
+    <div class="qcm-question" id="${qid}" style="counter-increment:none">
+      <div style="font-family:var(--mono);font-size:0.7rem;background:var(--ink);color:var(--paper);display:inline-block;padding:0.1rem 0.4rem;letter-spacing:0.08em;margin-bottom:0.6rem">Q${i+1}</div>
+      <p>${q.q}</p>
+      <div class="qcm-options">${opts}</div>
+      <button class="qcm-check-btn" onclick="checkRQ('${qid}', '${escExpl(q.expl)}')">Vérifier</button>
+      <div class="qcm-feedback" id="${qid}-fb"></div>
+    </div>`;
+  }).join('');
+
+  if(typeof MathJax !== 'undefined') {
+    MathJax.typesetPromise([container]);
+  }
+}
+
+function escExpl(s) {
+  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function checkRQ(qid, explanation) {
+  const selected = document.querySelector(`input[name="${qid}"]:checked`);
+  const fb = document.getElementById(`${qid}-fb`);
+  if(!selected) {
+    fb.style.display = 'block';
+    fb.className = 'qcm-feedback incorrect';
+    fb.textContent = 'Veuillez sélectionner une réponse.';
+    return;
+  }
+  fb.style.display = 'block';
+  const isCorrect = selected.dataset.correct === 'true';
+  if(isCorrect) {
+    fb.className = 'qcm-feedback correct';
+    fb.innerHTML = `✓ Correct ! ${explanation}`;
+    qcmScore++;
+  } else {
+    fb.className = 'qcm-feedback incorrect';
+    fb.innerHTML = `✗ Incorrect. ${explanation}`;
+  }
+  qcmAnswered++;
+  const btn = document.querySelector(`#${qid} .qcm-check-btn`);
+  if(btn) btn.disabled = true;
+  document.querySelectorAll(`#${qid} input`).forEach(i => i.disabled = true);
+  if(typeof MathJax !== 'undefined') MathJax.typesetPromise([fb]);
+
+  if(qcmAnswered === totalQ) {
+    const box = document.getElementById('qcm-score');
+    box.style.display = 'block';
+    document.getElementById('score-val').textContent = `${qcmScore} / ${totalQ}`;
+    const pct = qcmScore / totalQ;
+    document.getElementById('score-msg').textContent =
+      pct >= 5/6 ? '🎉 Excellent ! Maîtrise totale.' :
+      pct >= 3/6 ? '👍 Bien ! Quelques points à revoir.' :
+      '📚 À retravailler — consultez les sections du cours.';
+  }
+}
+
+// Générer le QCM au chargement
+generateQCM();
+</script>
+</body>
+</html>
