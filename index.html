@@ -6,6 +6,12 @@
 <title>Calcul Intégral — Terminale Spécialité</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<script>
+  MathJax = {
+    tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]'], ['$$','$$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+  };
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -1341,11 +1347,6 @@
 </main>
 
 <script>
-// ── MATHJAX CONFIG ──
-window.MathJax = {
-  tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['\\[','\\]']] },
-  startup: { typeset: true }
-};
 
 // ── SCROLL ANIMATION ──
 const observer = new IntersectionObserver(entries => {
@@ -1729,6 +1730,7 @@ function shuffle(arr) {
 }
 
 let qcmScore = 0, qcmAnswered = 0, totalQ = 6;
+let currentQuestions = [];
 
 function generateQCM() {
   qcmScore = 0;
@@ -1739,36 +1741,31 @@ function generateQCM() {
   document.getElementById('score-val').textContent = '';
   document.getElementById('score-msg').textContent = '';
 
-  const questions = makeQuestionBank();
-  totalQ = questions.length;
+  currentQuestions = makeQuestionBank();
+  totalQ = currentQuestions.length;
 
-  container.innerHTML = questions.map((q, i) => {
+  container.innerHTML = currentQuestions.map((q, i) => {
     const qid = `rq${i}`;
     const opts = q.opts.map((o, j) => `
       <label class="qcm-option">
         <input type="radio" name="${qid}" value="${j}" data-correct="${o.correct}">
-        ${o.label}
+        <span class="opt-label">${o.label}</span>
       </label>`).join('');
     return `
     <div class="qcm-question" id="${qid}" style="counter-increment:none">
       <div style="font-family:var(--mono);font-size:0.7rem;background:var(--ink);color:var(--paper);display:inline-block;padding:0.1rem 0.4rem;letter-spacing:0.08em;margin-bottom:0.6rem">Q${i+1}</div>
-      <p>${q.q}</p>
+      <p class="q-text">${q.q}</p>
       <div class="qcm-options">${opts}</div>
-      <button class="qcm-check-btn" onclick="checkRQ('${qid}', '${escExpl(q.expl)}')">Vérifier</button>
+      <button class="qcm-check-btn" onclick="checkRQ('${qid}', ${i})">Vérifier</button>
       <div class="qcm-feedback" id="${qid}-fb"></div>
     </div>`;
   }).join('');
 
-  if(typeof MathJax !== 'undefined') {
-    MathJax.typesetPromise([container]);
-  }
+  // MathJax a déjà traité la page statique ; on lui demande de traiter le nouveau HTML injecté
+  if (typeof MathJax !== 'undefined') MathJax.typesetPromise([container]);
 }
 
-function escExpl(s) {
-  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-}
-
-function checkRQ(qid, explanation) {
+function checkRQ(qid, questionIndex) {
   const selected = document.querySelector(`input[name="${qid}"]:checked`);
   const fb = document.getElementById(`${qid}-fb`);
   if(!selected) {
@@ -1779,6 +1776,7 @@ function checkRQ(qid, explanation) {
   }
   fb.style.display = 'block';
   const isCorrect = selected.dataset.correct === 'true';
+  const explanation = currentQuestions[questionIndex].expl;
   if(isCorrect) {
     fb.className = 'qcm-feedback correct';
     fb.innerHTML = `✓ Correct ! ${explanation}`;
@@ -1791,7 +1789,7 @@ function checkRQ(qid, explanation) {
   const btn = document.querySelector(`#${qid} .qcm-check-btn`);
   if(btn) btn.disabled = true;
   document.querySelectorAll(`#${qid} input`).forEach(i => i.disabled = true);
-  if(typeof MathJax !== 'undefined') MathJax.typesetPromise([fb]);
+  if (typeof MathJax !== 'undefined') MathJax.typesetPromise([fb]);
 
   if(qcmAnswered === totalQ) {
     const box = document.getElementById('qcm-score');
@@ -1805,8 +1803,9 @@ function checkRQ(qid, explanation) {
   }
 }
 
-// Générer le QCM au chargement
-generateQCM();
+// MathJax traite automatiquement le contenu statique au chargement de la page.
+// On génère le QCM une fois le DOM prêt ; MathJax traitera ensuite le HTML injecté.
+document.addEventListener('DOMContentLoaded', generateQCM);
 </script>
 </body>
 </html>
